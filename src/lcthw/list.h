@@ -2,6 +2,7 @@
 #define lcthw_List_h
 
 #include <stdlib.h>
+#include "dbg.h"
 
 struct ListNode;
 
@@ -25,6 +26,10 @@ void List_clear_destroy(List *list);
 #define List_count(A) ((A)->count)
 #define List_first(A) ((A)->first != NULL ? (A)->first->value : NULL)
 #define List_last(A) ((A)->last != NULL ? (A)->last->value : NULL)
+#define List_check(L) \
+    check(L != NULL, "List is NULL.");\
+    check(L->count >= 0, "List count is less than 0.");\
+    check(L->count == 0 || L->first != NULL, "First item in list is NULL, but should not be.");
 
 void List_push(List *list, void *value);
 void *List_pop(List *list);
