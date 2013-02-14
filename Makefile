@@ -11,7 +11,7 @@ TESTS=$(patsubst %.c,%,$(TEST_SRC))
 TARGET=build/liblcthw.a
 SO_TARGET=$(patsubst %.a,%.so,$(TARGET))
 # The target build
-all: $(TARGET) $(SO_TARGET) tests
+all: $(TARGET) $(SO_TARGET)
 
 dev: CFLAGS=-g -Wall -lsrc -Wextra $(OPTFLAGS)
 dev: all
@@ -35,7 +35,7 @@ tests: $(TESTS)
 	sh ./tests/runtests.sh
 
 valgrind:
-	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
+	VALGRIND="valgrind --dsymutil=yes --leak-check=full --log-file=/tmp/valgrind-%p.log" $(MAKE) tests
 
 # The cleaner
 clean:

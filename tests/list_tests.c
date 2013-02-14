@@ -2,27 +2,36 @@
 #include <lcthw/list.h>
 #include <assert.h>
 
-static List *list = NULL;
-char *test1 = "test1 data";
-char *test2 = "test2 data";
-char *test3 = "test3 data";
+char *str1 = "test1 data";
+char *str2 = "test2 data";
+char *str3 = "test3 data";
 
 char *test_create()
 {
-    list = List_create();
+    List *list = List_create();
     mu_assert(list != NULL, "Failed to create list.");
 
+    List_destroy(list);
     return NULL;
 }
 
 char *test_destroy()
 {
+    List *list = List_create();
+
     List_clear_destroy(list);
 
     return NULL;
 }
 
-char *test_push_pop() {
+char *test_push_pop()
+{
+    List *list = List_create();
+
+    char *test1 = strdup(str1);
+    char *test2 = strdup(str2);
+    char *test3 = strdup(str3);
+
     List_push(list, test1);
     mu_assert(List_last(list) == test1, "Wrong last value.");
 
@@ -35,19 +44,31 @@ char *test_push_pop() {
 
     char *val = List_pop(list);
     mu_assert(val == test3, "Wrong value on pop.");
+    free(val);
 
     val = List_pop(list);
     mu_assert(val == test2, "Wrong value on pop.");
+    free(val);
 
     val = List_pop(list);
     mu_assert(val == test1, "Wrong value on pop.");
+    free(val);
+
     mu_assert(List_count(list) == 0, "Wrong count after pop.");
+
+    List_clear_destroy(list);
 
     return NULL;
 }
 
 char *test_unshift()
 {
+    List *list = List_create();
+
+    char *test1 = strdup(str1);
+    char *test2 = strdup(str2);
+    char *test3 = strdup(str3);
+
     List_unshift(list, test1);
     mu_assert(List_first(list) == test1, "Wrong first value.");
 
@@ -58,31 +79,59 @@ char *test_unshift()
     mu_assert(List_first(list) == test3, "Wrong first value.");
     mu_assert(List_count(list) == 3, "Wrong count on unshift.");
 
+    List_clear_destroy(list);
+
     return NULL;
 }
 
 char *test_remove()
 {
+    List *list = List_create();
+
+    char *test1 = strdup(str1);
+    char *test2 = strdup(str2);
+    char *test3 = strdup(str3);
+
+    List_unshift(list, test1);
+    List_unshift(list, test2);
+    List_unshift(list, test3);
+
     char *val = List_remove(list, list->first->next);
+    free(val);
 
     mu_assert(val == test2, "Wrong removed element.");
     mu_assert(List_count(list) == 2, "Wrong count after remove.");
     mu_assert(List_first(list) == test3, "Wrong first after remove.");
     mu_assert(List_last(list) == test1, "Wrong last after remove.");
 
+    List_clear_destroy(list);
+
     return NULL;
 }
 
 char *test_shift()
 {
+    List *list = List_create();
+
+    char *test1 = strdup(str1);
+    char *test3 = strdup(str3);
+
+    List_unshift(list, test1);
+    List_unshift(list, test3);
+
     mu_assert(List_count(list) != 0, "Wrong count before shift.");
 
     char *val = List_shift(list);
     mu_assert(val == test3, "Wrong value on shift.");
+    free(val);
 
     val = List_shift(list);
     mu_assert(val == test1, "Wrong value on shift.");
+    free(val);
+
     mu_assert(List_count(list) == 0, "Wrong count after shift.");
+
+    List_clear_destroy(list);
 
     return NULL;
 }
@@ -92,11 +141,11 @@ char *all_tests()
     mu_suite_start();
 
     mu_run_test(test_create);
+    mu_run_test(test_destroy);
     mu_run_test(test_push_pop);
     mu_run_test(test_unshift);
     mu_run_test(test_remove);
     mu_run_test(test_shift);
-    mu_run_test(test_destroy);
 
     return NULL;
 }

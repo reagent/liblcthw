@@ -2,3 +2,4 @@ build*
 tests/*_tests
 *.o
 tests/tests.log
+*.dSYM
