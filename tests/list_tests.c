@@ -136,6 +136,66 @@ char *test_shift()
     return NULL;
 }
 
+char *test_copy()
+{
+    List *list = List_create();
+
+    char *test1 = strdup(str1);
+    char *test2 = strdup(str2);
+    char *test3 = strdup(str3);
+
+    List *copy1 = List_copy(list);
+
+    mu_assert(List_count(copy1) == 0, "Wrong count on copying empty list.");
+
+    List_push(list, test1);
+    List_push(list, test2);
+    List_push(list, test3);
+
+    mu_assert(List_count(list) == 3, "Wrong count after push.");
+
+    List *copy2 = List_copy(list);
+
+    mu_assert(List_count(copy2) == 3, "Wrong count after copy.");
+
+    mu_assert(copy2->first != NULL, "First element null after copy.");
+    mu_assert(copy2->last != NULL,  "Last element null after copy.");
+
+    mu_assert(copy2->first != list->first, "First element points to source node.");
+    mu_assert(copy2->first != list->last,  "Last element points to source node.");
+
+    mu_assert(List_first(copy2) == test1, "Wrong first element value.");
+    mu_assert(List_last(copy2)  == test3, "Wrong last element value.");
+
+    ListNode *prev = NULL;
+    ListNode *node = copy2->first;
+
+    mu_assert(node->prev == NULL, "Previous element is not NULL.");
+    mu_assert(node->next != NULL, "Next element is NULL.");
+
+    prev = node;
+    node = node->next;
+
+    mu_assert(node != NULL, "Next element is NULL.");
+    mu_assert(node->prev == prev, "Next element points to wrong previous node.");
+    mu_assert(node->next == copy2->last, "Next element points at wrong next node.");
+    mu_assert(List_value(node) == test2, "Wrong value for next node.");
+
+    prev = node;
+    node = node->next;
+
+    mu_assert(node != NULL, "Next element is NULL.");
+    mu_assert(node->prev == prev, "Next element points to wrong previous node.");
+    mu_assert(node->next == NULL, "Next element points at non-NULL node.");
+    mu_assert(copy2->last == node, "Last element points at wrong node.");
+
+    List_destroy(copy1);
+    List_destroy(copy2);
+    List_clear_destroy(list);
+
+    return NULL;
+}
+
 char *all_tests()
 {
     mu_suite_start();
@@ -146,6 +206,7 @@ char *all_tests()
     mu_run_test(test_unshift);
     mu_run_test(test_remove);
     mu_run_test(test_shift);
+    mu_run_test(test_copy);
 
     return NULL;
 }

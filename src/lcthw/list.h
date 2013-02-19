@@ -24,8 +24,10 @@ void List_clear(List *list);
 void List_clear_destroy(List *list);
 
 #define List_count(A) ((A)->count)
-#define List_first(A) ((A)->first != NULL ? (A)->first->value : NULL)
-#define List_last(A) ((A)->last != NULL ? (A)->last->value : NULL)
+#define List_value(N) ((N) != NULL ? (N)->value : NULL)
+#define List_first(A) (List_value((A)->first))
+#define List_last(A) (List_value((A)->last))
+
 #define List_check(L) \
     check(L != NULL, "List is NULL.");\
     check(L->count >= 0, "List count is less than 0.");\
@@ -36,6 +38,7 @@ void *List_pop(List *list);
 
 void List_unshift(List *list, void *value);
 void *List_shift(List *list);
+List *List_copy(List *source);
 
 void *List_remove(List *list, ListNode *node);
 

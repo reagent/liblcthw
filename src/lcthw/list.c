@@ -118,6 +118,44 @@ error:
     return NULL;
 }
 
+List *List_copy(List *source)
+{
+    List_check(source);
+
+    int i = 0;
+
+    ListNode *node = NULL,
+             *prev = NULL;
+
+    List *copy = List_create();
+
+    LIST_FOREACH(source, first, next, cur) {
+        i++;
+
+        node = calloc(1, sizeof(ListNode));
+        node->value = cur->value;
+
+        if (prev) {
+            node->prev = prev;
+            prev->next = node;
+        }
+
+        if (i == 1) {
+            copy->first = node;
+        } else if (i == source->count) {
+            copy->last = node;
+        }
+
+        prev = node;
+    }
+
+    copy->count = i;
+
+    return copy;
+error:
+    return NULL;
+}
+
 void *List_remove(List *list, ListNode *node)
 {
     void *result = NULL;
